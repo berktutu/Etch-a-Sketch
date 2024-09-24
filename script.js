@@ -20,6 +20,7 @@ const fillDivs = function (size) {
     canvas.appendChild(div);
   }
 };
+fillDivs(canvasSetup.gridDimensions.small);
 
 const getRandomColor = function () {
   const r = Math.floor(Math.random() * 256);
@@ -29,18 +30,33 @@ const getRandomColor = function () {
 };
 
 const getRandomOpacity = function () {
-  const opacity = Math.random();
+  const opacity = Math.random().toFixed(2);
   return opacity;
 };
 
-canvas.addEventListener("mouseover", function (event) {
-  if (event.target.classList.contains("canvas-div")) {
+let isDrawing = false;
+
+const applyColor = function (event) {
+  if (isDrawing && event.target.classList.contains("canvas-div")) {
     event.target.style.backgroundColor = getRandomColor();
     event.target.style.opacity = getRandomOpacity();
   }
+};
+
+canvas.addEventListener("mousedown", function (e) {
+  if (e.button === 0) {
+    isDrawing = true;
+    applyColor(e);
+  }
 });
 
-fillDivs(canvasSetup.gridDimensions.small);
+canvas.addEventListener("mousemove", applyColor);
+canvas.addEventListener("mouseup", function () {
+  isDrawing = false;
+});
+canvas.addEventListener("mouseleave", function () {
+  isDrawing = false;
+});
 
 const clearCanvas = function () {
   canvas.innerHTML = "";
